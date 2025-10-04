@@ -1,0 +1,10 @@
+path,type,mode,content
+home,dir,755,
+home/user,dir,755,
+home/user/docs,dir,755,
+home/user/docs/readme.txt,file,644,SGVsbG8gZnJvbSBWRlMgU3RhZ2UgNQ==
+home/user/docs/notes.txt,file,600,VGhpcyBpcyBhIHNlY29uZCBmaWxlIGluIFZGUw==
+var,dir,755,
+var/log,dir,755,
+var/log/system.log,file,644,U3lzdGVtIGluaXRpYWxpemVkIG9uIFN0YWdlIDU=
+tmp,dir,777,

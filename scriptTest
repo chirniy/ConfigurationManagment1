@@ -1,0 +1,31 @@
+ls
+whoami
+uname
+echo Hello Stage 5
+echo $USER
+echo "Тест 'одиночные кавычки'"
+echo "Переменная внутри строки: $HOME"
+cd home
+ls
+cd user
+ls
+cd docs
+ls
+cd /
+ls
+cd /nonexistent
+cd ../..
+cd home/user/docs
+head readme.txt
+head missing.txt
+ls
+chmod 600 readme.txt
+ls
+chmod 700 .
+ls
+chmod
+chmod 755 missing.txt
+chmod abc readme.txt
+cd /
+ls
+exit
