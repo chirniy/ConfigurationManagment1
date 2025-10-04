@@ -1,0 +1,19 @@
+ls
+cd home
+ls
+cd user
+ls
+cd docs
+ls
+cd /
+cd home/user/docs
+ls
+head readme.txt
+head nonexistent.txt
+whoami
+uname
+echo Hello World
+echo $USER
+cd /nonexistent
+cd ..
+exit

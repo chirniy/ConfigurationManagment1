@@ -7,6 +7,7 @@ import re
 import argparse
 import csv
 import base64
+import platform
 
 class VFSNode:
     def __init__(self, name, node_type="dir", mode="755", content=b""):
@@ -82,7 +83,6 @@ class VFS:
         self.cwd = current
         self.cwd_path = new_path if new_path != "" else "/"
         return True
-
 
 def build_prompt(vfs: VFS) -> str:
     user = getpass.getuser()
@@ -168,14 +168,26 @@ def handle_command(tokens, vfs: VFS):
         items = vfs.ls()
         print(" ".join(items))
     elif cmd == 'cd':
-        if not args:
-            target = "/"
-        else:
-            target = args[0]
+        target = args[0] if args else "/"
         if not vfs.cd(target):
             print(f"cd: {target}: Нет такого каталога")
     elif cmd == 'echo':
         print(" ".join(args))
+    elif cmd == 'head':
+        if not args:
+            print("head: требуется имя файла")
+        else:
+            fname = args[0]
+            if fname in vfs.cwd.children and vfs.cwd.children[fname].type == 'file':
+                content = vfs.cwd.children[fname].content.decode(errors='ignore')
+                lines = content.splitlines()[:10]
+                print('\n'.join(lines))
+            else:
+                print(f"head: {fname}: Нет такого файла")
+    elif cmd == 'whoami':
+        print(getpass.getuser())
+    elif cmd == 'uname':
+        print(platform.system())
     else:
         print(f"Команда не найдена: {cmd}")
     return True
@@ -184,7 +196,7 @@ def on_sigint(signum, frame):
     print("\n(Для выхода наберите 'exit')")
 
 def run_interactive(env, vfs: VFS):
-    print("Эмулятор оболочки — Этап 3 (VFS). Для выхода: exit")
+    print("Эмулятор оболочки — Этап 4 (Основные команды). Для выхода: exit")
     while True:
         try:
             line = input(build_prompt(vfs))
@@ -221,7 +233,7 @@ def run_script(path, env, vfs: VFS):
 
 def main():
     signal.signal(signal.SIGINT, on_sigint)
-    parser = argparse.ArgumentParser(description="Эмулятор оболочки — Этап 3. VFS")
+    parser = argparse.ArgumentParser(description="Эмулятор оболочки — Этап 4. Основные команды")
     parser.add_argument("--vfs", type=str, help="Путь к CSV-файлу VFS", required=False)
     parser.add_argument("--script", type=str, help="Путь к стартовому скрипту", required=False)
     args = parser.parse_args()
