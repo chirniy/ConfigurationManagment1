@@ -1,0 +1,26 @@
+ls
+whoami
+uname
+echo Hello Stage 5
+echo $USER
+cd home
+ls
+cd user
+ls
+cd docs
+ls
+head readme.txt
+head missing.txt
+ls
+chmod 600 readme.txt
+ls
+chmod 700 .
+ls
+chmod 755 missing.txt
+chmod
+chmod 123
+cd /nonexistent
+cd ../..
+cd /
+ls
+exit

@@ -56,7 +56,7 @@ class VFS:
     def ls(self):
         if self.cwd.type != "dir":
             return []
-        return list(self.cwd.children.keys())
+        return [f"{name} ({node.mode})" for name, node in self.cwd.children.items()]
 
     def cd(self, path):
         if path == "/":
@@ -82,6 +82,17 @@ class VFS:
                 return False
         self.cwd = current
         self.cwd_path = new_path if new_path != "" else "/"
+        return True
+
+    def chmod(self, mode, path):
+        parts = [p for p in path.strip("/").split("/") if p]
+        current = self.root if path.startswith("/") else self.cwd
+        for part in parts:
+            if part in current.children:
+                current = current.children[part]
+            else:
+                return False
+        current.mode = mode
         return True
 
 def build_prompt(vfs: VFS) -> str:
@@ -188,6 +199,13 @@ def handle_command(tokens, vfs: VFS):
         print(getpass.getuser())
     elif cmd == 'uname':
         print(platform.system())
+    elif cmd == 'chmod':
+        if len(args) < 2:
+            print("chmod: требуется режим и имя файла/каталога")
+        else:
+            mode, path = args[0], args[1]
+            if not vfs.chmod(mode, path):
+                print(f"chmod: невозможно изменить права доступа '{path}': Нет такого файла или каталога")
     else:
         print(f"Команда не найдена: {cmd}")
     return True
@@ -196,7 +214,7 @@ def on_sigint(signum, frame):
     print("\n(Для выхода наберите 'exit')")
 
 def run_interactive(env, vfs: VFS):
-    print("Эмулятор оболочки — Этап 4 (Основные команды). Для выхода: exit")
+    print("Эмулятор оболочки — Этап 5 (Дополнительные команды). Для выхода: exit")
     while True:
         try:
             line = input(build_prompt(vfs))
@@ -233,7 +251,7 @@ def run_script(path, env, vfs: VFS):
 
 def main():
     signal.signal(signal.SIGINT, on_sigint)
-    parser = argparse.ArgumentParser(description="Эмулятор оболочки — Этап 4. Основные команды")
+    parser = argparse.ArgumentParser(description="Эмулятор оболочки — Этап 5. Дополнительные команды")
     parser.add_argument("--vfs", type=str, help="Путь к CSV-файлу VFS", required=False)
     parser.add_argument("--script", type=str, help="Путь к стартовому скрипту", required=False)
     args = parser.parse_args()
